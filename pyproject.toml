@@ -1,0 +1,11 @@
+[project]
+name = "epi-generator"
+version = "0.1.0"
+description = "Gerador de dados sintéticos e análise bivariada para estudos epidemiológicos"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "groq>=1.5.0",
+    "pandas>=3.0.3",
+    "scipy>=1.18.0",
+]

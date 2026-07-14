@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# artefatos gerados (dados sintéticos e relatório de análise)
+*.csv
+analise_bivariada.md
+
+# docs internos de trabalho — não publicar
+/docs/
+/CLAUDE.md
+/CONTEXT.md
