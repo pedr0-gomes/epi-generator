@@ -11,3 +11,6 @@ analise_bivariada.md
 /docs/
 /CLAUDE.md
 /CONTEXT.md
+
+# Handoff automático de sessão (transitório, regenera todo SessionEnd)
+.retomar-auto
