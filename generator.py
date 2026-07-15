@@ -75,6 +75,25 @@ def _filtrar_validos(registros: list[dict], colunas_esperadas: set) -> list[dict
     return validos
 
 
+def _salvar_checkpoint(path: str, registros: list[dict], tema: str, n: int):
+    with open(path, "w") as f:
+        json.dump({"tema": tema, "n": n, "registros": registros}, f)
+
+
+def _carregar_checkpoint(path: str, tema: str, n: int) -> list[dict]:
+    if not os.path.exists(path):
+        return []
+    with open(path) as f:
+        dados = json.load(f)
+    if dados.get("tema") != tema or dados.get("n") != n:
+        print("  Checkpoint inválido (tema ou N diferente) — ignorando.")
+        return []
+    registros = dados.get("registros", [])
+    if registros:
+        print(f"  Checkpoint encontrado — retomando de {len(registros)}/{n} registros.")
+    return registros
+
+
 def gerar_dados(
     tema: str,
     variaveis: dict,
@@ -82,9 +101,10 @@ def gerar_dados(
     tipo_estudo: str = "",
     desfecho: str = "",
     fatores_risco: dict = None,
+    checkpoint_path: str = "checkpoint.json",
 ) -> list[dict]:
-    resultado = []
     colunas_esperadas = set(variaveis.keys())
+    resultado = _carregar_checkpoint(checkpoint_path, tema, n)
 
     while len(resultado) < n:
         faltam = n - len(resultado)
@@ -92,5 +112,7 @@ def gerar_dados(
         print(f"  Gerando lote de {lote} registros... ({len(resultado)}/{n} prontos)")
         novos = _gerar_lote(tema, variaveis, lote, tipo_estudo, desfecho, fatores_risco)
         resultado += _filtrar_validos(novos, colunas_esperadas)
+        _salvar_checkpoint(checkpoint_path, resultado, tema, n)
 
+    os.remove(checkpoint_path)
     return resultado
